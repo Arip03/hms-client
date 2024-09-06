@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <HeaderComponent :title="headerTitle" />
+    <HeaderComponent />
 
     <div class="flex mt-[64px] max-h-screen overflow-hidden">
       <Sidebar
@@ -18,34 +18,28 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import HeaderComponent from '@/components/layouts/HeaderComponent.vue';
 import FooterComponent from '@/components/layouts/FooterComponent.vue';
-import Sidebar from '@/layouts/Sidebar.vue';
+import Sidebar from '@/layouts/SideBar.vue';
+import type { SidebarItem } from '@/entities/SidebarItem';
 
-export default {
-  components: {
-    HeaderComponent,
-    FooterComponent,
-    Sidebar,
-  },
-  data() {
-    return {
-      drawer: false, // Local state for drawer
-    };
-  },
-  computed: {
-    currentSidebarItems() {
-      return this.$route.meta.sidebarItems || [];
-    },
-  },
-  methods: {
-    handleToggleDrawer(value) {
-      this.drawer = value; 
-    },
-    changeComponent(componentName) {
-      this.$router.push({ name: componentName });
-    },
-  },
+const drawer = ref<boolean>(false);
+
+const route = useRoute();
+const currentSidebarItems = computed<SidebarItem[]>(() => {
+  const sidebarItems = route.meta.sidebarItems as SidebarItem[] | undefined;
+  return sidebarItems || [];
+});
+
+const handleToggleDrawer = (value: boolean) => {
+  drawer.value = value;
+};
+
+const changeComponent = (componentName: string) => {
+  const router = useRouter();
+  router.push({ name: componentName });
 };
 </script>

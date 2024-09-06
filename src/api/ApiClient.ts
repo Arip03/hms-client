@@ -1,5 +1,7 @@
 import axios from 'axios';
-import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'; // Use InternalAxiosRequestConfig instead of AxiosRequestConfig
+import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'; 
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 export class ApiClient {
   private axiosInstance: AxiosInstance;
@@ -10,19 +12,19 @@ export class ApiClient {
     });
 
     this.axiosInstance.interceptors.request.use(
-      (config: InternalAxiosRequestConfig) => { // Use InternalAxiosRequestConfig
+      (config: InternalAxiosRequestConfig) => {
         if (token) {
-          config.headers = config.headers || {}; // Ensure headers object exists
+          config.headers = config.headers || {}; 
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
       },
-      (error: any) => Promise.reject(error) // Type 'any' or 'unknown' can be used for error
+      (error: any) => Promise.reject(error) 
     );
 
     this.axiosInstance.interceptors.response.use(
-      (response: AxiosResponse) => response, // Explicitly type the response
-      (error: any) => Promise.reject(error) // Explicitly type the error
+      (response: AxiosResponse) => response, 
+      (error: any) => Promise.reject(error) 
     );
   }
 
@@ -68,6 +70,6 @@ export class ApiClient {
 }
 
 const baseURL = import.meta.env.VITE_APP_BASE_URL;
-const apiClient = new ApiClient(baseURL);
+const apiClient = new ApiClient(baseURL, cookies.get('token'));
 
 export default apiClient;
