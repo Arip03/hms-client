@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import LogoutView from '@/views/LogoutView.vue';
 import ReceptionView from '@/views/ReceptionView.vue';
+import AddPatient from '@/components/reception/AddPatient.vue';
 
 const routes = [
   {
@@ -20,15 +21,26 @@ const routes = [
     meta: { layout: 'auth' },
   },
   {
-    path: '/RECEPTION',
+    path: '/reception',
     component: ReceptionView,
-    meta: { 
+    meta: {
       layout: 'main',
       sidebarItems: [
-        { key: '1', icon: '📋', title: 'Patient Token', display: 'addpatient' },
-        { key: '2', icon: '📄', title: 'Queue View', display: 'queview' },
+        {
+          key: '1',
+          icon: '📋',
+          title: 'Add New Patient',
+          display: 'AddPatient',
+        },
       ],
-     }, 
+    },
+    children: [
+      {
+        path: 'add-patient',
+        component: AddPatient,
+        meta: { layout: 'main' },
+      },
+    ],
   },
   {
     path: '/logout',

@@ -4,13 +4,13 @@
 
 <script>
 import MainLayout from '@/layouts/MainLayout.vue';
-import addpatient from '@/components/reception/addpatient.vue';
+import AddPatient from '@/components/reception/AddPatient.vue';
 import queview from '@/components/reception/queview.vue';
 
 export default {
   components: {
     MainLayout,
-    addpatient,
+    AddPatient,
     queview,
   },
   data() {
@@ -20,13 +20,13 @@ export default {
       que: false,
       username: 'Receptionist',
       userRole: 'receptionist',
-      component: 'addpatient',
+      component: 'AddPatient',
       listitems: [
         {
           key: '1',
           icon: '📋',
-          title: 'Patient token',
-          display: 'addpatient',
+          title: 'Add New Patient',
+          display: 'AddPatient',
         },
         {
           key: '2',
@@ -52,5 +52,4 @@ export default {
 </script>
 
 <style scoped>
-/* Add custom styles here if needed */
 </style>

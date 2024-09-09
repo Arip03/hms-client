@@ -1,89 +1,124 @@
 <template>
-  <div class="p-6 bg-gray-100 full-height" >
-    <!-- Form -->
-    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6 border border-gray-200">
-      <form ref="form" @submit.prevent="submitAddNewUserForm" class="space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div class="p-6 bg-gray-100 full-height">
+    <div class="flex items-center justify-center">
+      <h1 class="text-2xl font-bold mb-6">Add New Patient</h1>
+    </div>
+
+    <div class="max-w-7xl my-5 w-full mx-auto bg-white shadow-lg rounded-lg p-10 border border-gray-200">
+      <form ref="formRef" @submit.prevent="submitAddNewPatientForm" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
           <div>
-            <label class="block text-gray-700">Patient Name</label>
+            <label class="block text-gray-700">First Name</label>
             <input
-              v-model="send.patientName"
+              v-model="send.firstName"
               type="text"
-              placeholder="Patient name"
+              placeholder="First name"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              :class="{'border-red-500': errors.firstName}"
+            />
+            <p v-if="errors.firstName" class="text-red-500 text-sm mt-1">{{ errors.firstName }}</p>
+          </div>
+          <div>
+            <label class="block text-gray-700">Father Name</label>
+            <input
+              v-model="send.fatherName"
+              type="text"
+              placeholder="Father name"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label class="block text-gray-700">Patient Age</label>
+            <label class="block text-gray-700">Last Name</label>
             <input
-              v-model="send.patientAge"
+              v-model="send.lastName"
               type="text"
-              placeholder="Patient age"
+              placeholder="Last name"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              :class="{'border-red-500': errors.lastName}"
+            />
+            <p v-if="errors.lastName" class="text-red-500 text-sm mt-1">{{ errors.lastName }}</p>
+          </div>
+          <div>
+            <label class="block text-gray-700">Personal Number</label>
+            <input
+              v-model="send.personalNumber"
+              type="text"
+              placeholder="Personal number"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
             <label class="block text-gray-700">Gender</label>
             <select
-              v-model="send.patientGender"
+              v-model="send.gender"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option v-for="option in gender" :key="option.value" :value="option.value">
+              <option v-for="option in genderOptions" :key="option.value" :value="option.value">
                 {{ option.text }}
               </option>
             </select>
           </div>
           <div>
+            <label class="block text-gray-700">Date of Birth</label>
+            <input
+              v-model="send.dateOfBirth"
+              type="date"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
             <label class="block text-gray-700">Address</label>
             <input
-              v-model="send.patientAddress"
+              v-model="send.address"
               type="text"
-              placeholder="Patient address"
+              placeholder="Address"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label class="block text-gray-700">Email</label>
+            <label class="block text-gray-700">Phone</label>
             <input
-              v-model="send.patientEmail"
-              type="email"
-              placeholder="Email-Id"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-gray-700">Phone Number</label>
-            <input
-              v-model="send.patientPhoneno"
+              v-model="send.phone"
               type="text"
               placeholder="Phone number"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
+            <label class="block text-gray-700">Email</label>
+            <input
+              v-model="send.email"
+              type="email"
+              placeholder="Email"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              :class="{'border-red-500': errors.email}"
+            />
+            <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
+          </div>
+          <div>
+            <label class="block text-gray-700">Marital Status</label>
+            <input
+              v-model="send.maritalStatus"
+              type="text"
+              placeholder="Marital Status"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
             <label class="block text-gray-700">Occupation</label>
             <input
-              v-model="send.patientOccupation"
+              v-model="send.occupation"
               type="text"
               placeholder="Occupation"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label class="block text-gray-700">Blood Group</label>
+            <label class="block text-gray-700">Insurance Number</label>
             <input
-              v-model="send.patientBloodGroup"
+              v-model="send.insuranceNumber"
               type="text"
-              placeholder="Blood group"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-gray-700">Marital Status</label>
-            <input
-              v-model="send.patientMaritalstatus"
-              type="text"
-              placeholder="Marital status"
+              placeholder="Insurance Number"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -104,28 +139,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref } from 'vue';
 import DialogBox from '@/components/common/DialogBox.vue';
 import apiClient from '../../api/ApiClient';
 import type { DialogMessage } from '@/entities/DialogMessage';
-import type { PatientData } from '../../entities/PatientData';
+import type { CreatePatientData } from '@/entities/CreatePatientData';
 
 export default defineComponent({
-  name: 'AddUserForm',
+  name: 'AddPatientForm',
   components: {
     DialogBox
   },
   setup() {
-    const send = ref<PatientData>({
-      patientName: '',
-      patientAge: '',
-      patientGender: '',
-      patientOccupation: '',
-      patientAddress: '',
-      patientMaritalstatus: '',
-      patientBloodGroup: '',
-      patientPhoneno: '',
-      patientEmail: ''
+    const send = ref<CreatePatientData>({
+      firstName: '',
+      fatherName: '',
+      lastName: '',
+      personalNumber: '',
+      gender: 'FEMALE',
+      dateOfBirth: '',
+      address: '',
+      phone: '',
+      email: '',
+      maritalStatus: '',
+      occupation: '',
+      insuranceNumber: ''
     });
 
     const dialogdata = ref<DialogMessage>({
@@ -136,69 +174,100 @@ export default defineComponent({
       buttontext: ''
     });
 
-    const gender = [
-      { text: 'Male', value: 'male' },
-      { text: 'Female', value: 'female' }
+    const genderOptions = [
+      { text: 'Male', value: 'MALE' },
+      { text: 'Female', value: 'FEMALE' }
     ];
 
     const formRef = ref<HTMLFormElement | null>(null);
 
-    const submitAddNewUserForm = async () => {
-      try {
-        const response = await apiClient.post<{ success: boolean, error?: string }>('/patient/create', send.value);
-        if (response.success) {
-          dialogdata.value = {
-            title: 'Success',
-            message: `Created new user ${send.value.patientName}`,
-            buttontext: 'Ok',
-            type: 'success',
-            show: true
-          };
-          for (const key in send.value) {
-            send.value[key as keyof PatientData] = '';
-          }
-          formRef.value?.reset();
-        } else if (response.error) {
-          dialogdata.value = {
-            title: 'Error',
-            message: response.error,
-            buttontext: 'Ok',
-            type: 'warning',
-            show: true
-          };
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          dialogdata.value = {
-            title: 'Error',
-            message: err.message,
-            buttontext: 'Ok',
-            type: 'warning',
-            show: true
-          };
-        }
-      }
+    const errors = ref<{ [key: string]: string }>({});
+
+    const validateForm = () => {
+      errors.value = {};
+      if (!send.value.firstName) errors.value.firstName = 'First name is required';
+      if (!send.value.lastName) errors.value.lastName = 'Last name is required';
+      if (!send.value.email) errors.value.email = 'Email is required';
+      return Object.keys(errors.value).length === 0;
     };
 
-    onMounted(() => {
-      formRef.value = document.querySelector('form');
-    });
+    const submitAddNewPatientForm = async () => {
+  if (!validateForm()) {
+    dialogdata.value = {
+      title: 'Validation Error',
+      message: 'Please fill in all required fields.',
+      buttontext: 'Ok',
+      type: 'warning',
+      show: true
+    };
+    return;
+  }
+
+  try {
+    const response = await apiClient.post<{ success: boolean; error?: string }>('/patients', send.value);
+
+    if (response) {
+      dialogdata.value = {
+        title: 'Success',
+        message: `Created new patient ${send.value.firstName}`,
+        buttontext: 'Ok',
+        type: 'success',
+        show: true
+      };
+      
+      send.value = {
+        firstName: '',
+        fatherName: '',
+        lastName: '',
+        personalNumber: '',
+        gender: 'FEMALE',
+        dateOfBirth: '',
+        address: '',
+        phone: '',
+        email: '',
+        maritalStatus: '',
+        occupation: '',
+        insuranceNumber: ''
+      };
+
+    } else if (response.error) {
+      dialogdata.value = {
+        title: 'Error',
+        message: response.error,
+        buttontext: 'Ok',
+        type: 'warning',
+        show: true
+      };
+    }
+
+  } catch (err) {
+    if (err instanceof Error) {
+      dialogdata.value = {
+        title: 'Error',
+        message: err.message,
+        buttontext: 'Ok',
+        type: 'warning',
+        show: true
+      };
+    }
+  }
+};
 
     return {
       send,
       dialogdata,
-      gender,
-      submitAddNewUserForm,
-      formRef
+      genderOptions,
+      submitAddNewPatientForm,
+      formRef,
+      errors
     };
   }
 });
 </script>
 
-<style scoped>
 
+<style scoped>
 .full-height {
-  height: calc(100vh - 100px);
+  min-height: 100vh; 
 }
-/* Add any additional styling here */
 </style>

@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <HeaderComponent />
 
-    <div class="flex mt-[64px] max-h-screen overflow-hidden">
+    <div class="flex mt-[64px] max-h-screen">
       <Sidebar
         :items="currentSidebarItems"
         :drawer="drawer"
@@ -13,8 +13,6 @@
         <router-view />
       </main>
     </div>
-
-    <FooterComponent />
   </div>
 </template>
 
@@ -22,7 +20,6 @@
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import HeaderComponent from '@/components/layouts/HeaderComponent.vue';
-import FooterComponent from '@/components/layouts/FooterComponent.vue';
 import Sidebar from '@/layouts/SideBar.vue';
 import type { SidebarItem } from '@/entities/SidebarItem';
 

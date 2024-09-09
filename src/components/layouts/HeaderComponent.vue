@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-gray-800 text-white flex items-center justify-between p-4 fixed top-0 left-0 w-full z-50">
+  <header class="bg-gray-900 text-white flex items-center justify-between p-4 fixed top-0 left-0 w-full z-50">
     <div class="flex items-center">
       <span class="text-xl font-semibold">HMS</span>
     </div>
