@@ -1,51 +1,36 @@
 <template>
-    <component :is="component" />
+  <MainLayout>
+    <v-navigation-drawer :value="drawer" @input="drawer = !drawer">
+    </v-navigation-drawer>
+    <router-view />
+  </MainLayout>
 </template>
 
 <script>
-import MainLayout from '@/layouts/MainLayout.vue';
-import AddPatient from '@/components/reception/AddPatient.vue';
-import queview from '@/components/reception/queview.vue';
-
 export default {
-  components: {
-    MainLayout,
-    AddPatient,
-    queview,
-  },
   data() {
     return {
-      headerTitle: 'Reception Dashboard',
       drawer: false,
-      que: false,
-      username: 'Receptionist',
-      userRole: 'receptionist',
-      component: 'AddPatient',
       listitems: [
         {
           key: '1',
           icon: '📋',
           title: 'Add New Patient',
-          display: 'AddPatient',
+          routeName: 'AddPatient', // Route name to navigate
         },
         {
           key: '2',
           icon: '📄',
-          title: 'Queue View',
-          display: 'queview',
+          title: 'Find Patient',
+          routeName: 'FindPatient', // Route name to navigate
         },
       ],
     };
   },
   methods: {
-    changepage() {
-      this.$router.push('/admin').catch((err) => {
-        console.error(err);
-      });
-    },
-    changeComponent(componentName) {
-      this.component = componentName;
-      this.drawer = !this.drawer;
+    goToPage(routeName) {
+      this.$router.push({ name: routeName });
+      this.drawer = false; // Optionally close drawer after navigation
     },
   },
 };
