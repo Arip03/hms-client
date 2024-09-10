@@ -5,6 +5,7 @@ import LogoutView from '@/views/LogoutView.vue';
 import ReceptionView from '@/views/ReceptionView.vue';
 import AddPatient from '@/components/reception/AddPatient.vue';
 import FindPatient from '@/components/reception/FindPatient.vue';
+import AppointmentView from '@/components/reception/AppointmentView.vue';
 
 const routes = [
   {
@@ -30,20 +31,27 @@ const routes = [
     meta: { 
       layout: 'main',
       sidebarItems: [
-         {
+        {
           key: '1',
+          icon: '🕛',
+          title: 'Appointment',
+          display: 'AppointmentView'
+        },
+        {
+          key: '2',
           icon: '🔍',
           title: 'Find Patient',
           display: 'FindPatient'
         },
         {
-          key: '2',
+          key: '3',
           icon: '👨‍⚕️',
           title: 'Add New Patient',
           display: 'AddPatient'
         },
       ]
     },
+
     children: [
       {
         path: 'add-patient',
@@ -56,9 +64,16 @@ const routes = [
         name: 'FindPatient',
         component: FindPatient,
         meta: { layout: 'main' },
+      }, 
+      {
+        path: '/appointment',
+        name: 'AppointmentView',
+        component: AppointmentView,
+        meta: { layout: 'main' },
       },
     ],
   },
+ 
   {
     path: '/logout',
     name: 'Logout',
