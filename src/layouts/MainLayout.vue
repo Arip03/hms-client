@@ -8,7 +8,7 @@
     />
     <div class="flex flex-col flex-1" :style="{ marginLeft: sidebarWidth }">
       <HeaderComponent :sidebarWidth="sidebarWidth" />
-      <main class="flex-1 mt-16 ">
+      <main class="flex-1 mt-16">
         <router-view />
       </main>
     </div>
@@ -16,28 +16,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import HeaderComponent from '@/components/layouts/HeaderComponent.vue';
-import Sidebar from '@/layouts/SideBar.vue';
-import type { SidebarItem } from '@/entities/SidebarItem';
+import { ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import HeaderComponent from '@/components/layouts/HeaderComponent.vue'
+import Sidebar from '@/layouts/SideBar.vue'
+import type { SidebarItem } from '@/entities/SidebarItem'
 
-const drawer = ref<boolean>(false);
+const drawer = ref<boolean>(false)
+const router = useRouter()
+const route = useRoute()
 
-const route = useRoute();
 const currentSidebarItems = computed<SidebarItem[]>(() => {
-  const sidebarItems = route.meta.sidebarItems as SidebarItem[] | undefined;
-  return sidebarItems || [];
-});
+  const sidebarItems = route.meta.sidebarItems as SidebarItem[] | undefined
+  return sidebarItems || []
+})
 
-const sidebarWidth = computed(() => (drawer.value ? 'w-64' : 'w-20'));
+const sidebarWidth = computed(() => (drawer.value ? 'w-64' : 'w-20'))
 
 const handleToggleDrawer = (value: boolean) => {
-  drawer.value = value;
-};
+  drawer.value = value
+}
 
 const changeComponent = (componentName: string) => {
-  const router = useRouter();
-  router.push({ name: componentName });
-};
+  router.push({ name: componentName })
+}
 </script>
