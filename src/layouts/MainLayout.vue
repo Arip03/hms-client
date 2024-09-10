@@ -1,15 +1,14 @@
 <template>
-  <div class="flex flex-col">
-    <HeaderComponent />
-
-    <div class="flex mt-[64px] max-h-screen">
-      <Sidebar
-        :items="currentSidebarItems"
-        :drawer="drawer"
-        @toggleDrawer="handleToggleDrawer"
-        @changeComponent="changeComponent"
-      />
-      <main class="flex-1">
+  <div class="flex">
+    <Sidebar
+      :items="currentSidebarItems"
+      :drawer="drawer"
+      @toggleDrawer="handleToggleDrawer"
+      @changeComponent="changeComponent"
+    />
+    <div class="flex flex-col flex-1" :style="{ marginLeft: sidebarWidth }">
+      <HeaderComponent :sidebarWidth="sidebarWidth" />
+      <main class="flex-1 mt-16 ">
         <router-view />
       </main>
     </div>
@@ -30,6 +29,8 @@ const currentSidebarItems = computed<SidebarItem[]>(() => {
   const sidebarItems = route.meta.sidebarItems as SidebarItem[] | undefined;
   return sidebarItems || [];
 });
+
+const sidebarWidth = computed(() => (drawer.value ? 'w-64' : 'w-20'));
 
 const handleToggleDrawer = (value: boolean) => {
   drawer.value = value;

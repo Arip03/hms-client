@@ -134,7 +134,10 @@
       </form>
     </div>
 
-    <DialogBox :dialogmessage="dialogdata" />
+    <DialogBox 
+    :dialogmessage="dialogdata" 
+    @update:dialogmessage="updateDialogData"
+  />
   </div>
 </template>
 
@@ -179,8 +182,6 @@ export default defineComponent({
       { text: 'Female', value: 'FEMALE' }
     ];
 
-    const formRef = ref<HTMLFormElement | null>(null);
-
     const errors = ref<{ [key: string]: string }>({});
 
     const validateForm = () => {
@@ -191,30 +192,7 @@ export default defineComponent({
       return Object.keys(errors.value).length === 0;
     };
 
-    const submitAddNewPatientForm = async () => {
-  if (!validateForm()) {
-    dialogdata.value = {
-      title: 'Validation Error',
-      message: 'Please fill in all required fields.',
-      buttontext: 'Ok',
-      type: 'warning',
-      show: true
-    };
-    return;
-  }
-
-  try {
-    const response = await apiClient.post<{ success: boolean; error?: string }>('/patients', send.value);
-
-    if (response) {
-      dialogdata.value = {
-        title: 'Success',
-        message: `Created new patient ${send.value.firstName}`,
-        buttontext: 'Ok',
-        type: 'success',
-        show: true
-      };
-      
+    const resetForm = () => {
       send.value = {
         firstName: '',
         fatherName: '',
@@ -229,37 +207,58 @@ export default defineComponent({
         occupation: '',
         insuranceNumber: ''
       };
+    };
 
-    } else if (response.error) {
-      dialogdata.value = {
-        title: 'Error',
-        message: response.error,
-        buttontext: 'Ok',
-        type: 'warning',
-        show: true
-      };
-    }
+    const submitAddNewPatientForm = async () => {
+      if (!validateForm()) {
+        dialogdata.value = {
+          title: 'Validation Error',
+          message: 'Please fill in all required fields.',
+          buttontext: 'Ok',
+          type: 'warning',
+          show: true
+        };
+        return;
+      }
 
-  } catch (err) {
-    if (err instanceof Error) {
-      dialogdata.value = {
-        title: 'Error',
-        message: err.message,
-        buttontext: 'Ok',
-        type: 'warning',
-        show: true
-      };
-    }
-  }
-};
+      try {
+        const response = await apiClient.post<{ id: string; message: string }>('/patients', send.value);
+
+        if (response.id) {
+          dialogdata.value = {
+            title: 'Success',
+            message: `Patient added successfully: ${send.value.firstName}`,
+            buttontext: 'Ok',
+            type: 'success',
+            show: true
+          };
+
+          resetForm();
+        }
+      } catch (err: any) {
+        const errorMessage = err.response?.data?.message || err.message || 'An unknown error occurred. Please try again later.';
+        
+        dialogdata.value = {
+          title: 'Error',
+          message: errorMessage,
+          buttontext: 'Ok',
+          type: 'error',
+          show: true
+        };
+      }
+    };
+
+    const updateDialogData = (newData: DialogMessage) => {
+      dialogdata.value = newData;
+    };
 
     return {
       send,
       dialogdata,
       genderOptions,
       submitAddNewPatientForm,
-      formRef,
-      errors
+      errors,
+      updateDialogData
     };
   }
 });

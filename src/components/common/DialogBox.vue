@@ -31,6 +31,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['update:dialogmessage'],
   setup(props, { emit }) {
     const isDialogVisible = ref(props.dialogmessage.show);
 
@@ -41,6 +42,7 @@ export default defineComponent({
       }
     );
 
+    // Close dialog method
     const closeDialog = () => {
       isDialogVisible.value = false;
       emit('update:dialogmessage', { ...props.dialogmessage, show: false });
@@ -53,7 +55,6 @@ export default defineComponent({
   }
 });
 </script>
-
 
 <style scoped>
 .fade-enter-active, .fade-leave-active {

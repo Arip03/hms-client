@@ -37,19 +37,10 @@
       </p>
     </div>
 
-    <div v-if="dialog" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <h3 class="text-xl font-semibold text-red-600">Error!</h3>
-        <p class="pt-4">{{ errorMessage }}</p>
-        <div class="mt-4 flex justify-end">
-          <ActionButton
-            label="Close"
-            classname="text-blue-500"
-            @click="dialog = false"
-          />
-        </div>
-      </div>
-    </div>
+    <DialogBox 
+      :dialogmessage="dialogdata" 
+      @update:dialogmessage="updateDialogData"
+    />
   </div>
 </template>
 
@@ -60,14 +51,23 @@ import InputText from '../components/common/InputText.vue';
 import ActionButton from '../components/common/ActionButton.vue';
 import apiClient from '../api/ApiClient';
 import Cookies from 'universal-cookie';
+import DialogBox from '@/components/common/DialogBox.vue';
 import type { LoginResponse } from '../entities/LoginResponse';
+import type { DialogMessage } from '@/entities/DialogMessage';
 
 const cookies = new Cookies();
 const router = useRouter();
 
 const form = reactive({ username: '', password: '' });
-const dialog = ref(false);
-const errorMessage = ref('');
+
+// Dialog data
+const dialogdata = ref<DialogMessage>({
+  show: false,
+  title: '',
+  message: '',
+  buttontext: 'Close',
+  type: 'error', // default type
+});
 
 const submitForm = async () => {
   try {
@@ -78,13 +78,27 @@ const submitForm = async () => {
       cookies.set('role', response.role, { expires: new Date(Date.now() + 2.592e8) });
       router.push(response.role ? `/${response.role}` : '/');
     } else {
-      errorMessage.value = 'Unexpected response data';
-      dialog.value = true;
+      dialogdata.value = {
+        show: true,
+        title: 'Error',
+        message: 'Unexpected response data',
+        buttontext: 'Close',
+        type: 'error',
+      };
     }
   } catch (error) {
     console.error('Request failed:', error);
-    errorMessage.value = 'An error occurred. Check the console for details.';
-    dialog.value = true;
+    dialogdata.value = {
+      show: true,
+      title: 'Error',
+      message: 'Username or Password Incorrect',
+      buttontext: 'Close',
+      type: 'error',
+    };
   }
+};
+
+const updateDialogData = (newDialogData: DialogMessage) => {
+  dialogdata.value = newDialogData;
 };
 </script>

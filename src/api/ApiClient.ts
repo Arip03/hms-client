@@ -23,9 +23,12 @@ export class ApiClient {
     );
 
     this.axiosInstance.interceptors.response.use(
-      (response: AxiosResponse) => response, 
-      (error: any) => Promise.reject(error) 
-    );
+      (response: AxiosResponse) => response,
+      (error: any) => {
+        const errorMessage = error.response?.data?.message || 'An error occurred. Please try again.';
+        return Promise.reject(new Error(errorMessage));
+      }
+    );    
   }
 
   async get<T>(url: string, config?: InternalAxiosRequestConfig): Promise<T> {
