@@ -63,7 +63,7 @@ import type { SidebarItem } from '@/entities/SidebarItem';
 defineProps<{
   items: SidebarItem[];
   drawer: boolean;
-}>();
+}>();  
 
 const userProfile = ref<UserProfile>({
   fullName: '',

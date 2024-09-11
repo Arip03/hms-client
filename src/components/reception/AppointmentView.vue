@@ -1,120 +1,129 @@
 <template>
-  <div class="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
-    <h2 class="text-2xl font-bold mb-4">Schedule Appointment</h2>
-    <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-6 border border-gray-200">
-      <form @submit.prevent="scheduleAppointment" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Search Patient by Personal Number</label>
-          <input 
-            v-model="searchPersonalNumber" 
-            @input="searchPatient"
-            type="text"
-            placeholder="Enter personal number"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div v-if="patientSearchResult.length" class="space-y-2">
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">Select Patient</label>
-            <select v-model="selectedPatient" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option v-for="patient in patientSearchResult" :key="patient.id" :value="patient.id">
-                {{ patient.firstName }} {{ patient.lastName }}
+    <div class="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
+      <h2 class="text-2xl font-bold mb-4">View Appointments</h2>
+      <div class="w-full max-w-7xl bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+        
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+
+          <div class="md:w-1/4 mb-4 md:mb-0">
+            <label class="block text-gray-700 font-semibold mb-2">Search Patient by Personal Number</label>
+            <input 
+              v-model="searchPersonalNumber" 
+              type="text"
+              placeholder="Enter personal number"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div class="md:w-1/4 mb-4 md:mb-0">
+            <label class="block text-gray-700 font-semibold mb-2">Filter by Doctor</label>
+            <select v-model="selectedDoctor" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">All Doctors</option>
+              <option v-for="doctor in doctors" :key="doctor.id" :value="doctor.id">
+                {{ doctor.fullName }}
               </option>
             </select>
           </div>
-          <button v-if="!patientFound" @click="addNewPatient" class="w-full px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-            Add New Patient
+  
+          <div class="md:w-1/4">
+            <label class="block text-gray-700 font-semibold mb-2">Filter by Date</label>
+            <input 
+              type="date" 
+              v-model="selectedDate"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div> 
+          <div class="mt-5 text-center">
+          <button @click="filterAppointments" class="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Apply
           </button>
         </div>
-
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Doctor</label>
-          <select v-model="selectedDoctor" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option v-for="doctor in doctors" :key="doctor.id" :value="doctor.id">
-              {{ doctor.firstName }} {{ doctor.lastName }}
-            </option>
-          </select>
         </div>
-
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Date & Time</label>
-          <input type="datetime-local" v-model="appointmentDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+  
+       
+  
+        <div v-if="appointments.length">
+          <table class="w-full bg-white border border-gray-200 rounded-lg">
+            <thead>
+              <tr class="bg-gray-100 border-b">
+                <th class="p-2 text-left">Patient</th>
+                <th class="p-2 text-left">Doctor</th>
+                <th class="p-2 text-left">Date</th>
+                <th class="p-2 text-left">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="appointment in appointments" :key="appointment.id">
+                <td class="p-2">{{ appointment.patientName }}</td>
+                <td class="p-2">{{ appointment.doctorName }}</td>
+                <td class="p-2">{{ new Date(appointment.date).toLocaleDateString() }}</td>
+                <td class="p-2">{{ new Date(appointment.time).toLocaleTimeString() }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          Schedule Appointment
-        </button>
-      </form>
+        <div v-else class="text-center text-gray-700 mt-4">
+          No appointments found.
+        </div>
+      </div>
     </div>
-  </div>
-</template>
-
-<script setup lang="ts">
+  </template>
+  
+  <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import apiClient from '@/api/ApiClient';
-
-interface Patient {
-  id: number;
-  firstName: string;
-  lastName: string;
-  personalNumber: string;
-}
+import { AxiosHeaders } from 'axios';
 
 interface Doctor {
   id: number;
-  firstName: string;
-  lastName: string;
+  fullName: string;
 }
 
-const patients = ref<Patient[]>([]);
+interface Appointment {
+  id: number;
+  patientName: string;
+  doctorName: string;
+  date: string;
+  time: string;
+}
+
 const doctors = ref<Doctor[]>([]);
-const selectedPatient = ref<number | null>(null);
-const selectedDoctor = ref<number | null>(null);
-const appointmentDate = ref<string>('');
+const appointments = ref<Appointment[]>([]);
+const selectedDoctor = ref<string>('');
 const searchPersonalNumber = ref<string>('');
-const patientSearchResult = ref<Patient[]>([]);
-const patientFound = ref<boolean>(false);
+const selectedDate = ref<string>('');
 
-const searchPatient = async () => {
-  if (searchPersonalNumber.value) {
-    try {
-      const response = await apiClient.get<Patient[]>(`/patients/search?personalNumber=${searchPersonalNumber.value}`);
-      patientSearchResult.value = response;
-      patientFound.value = response.length > 0;
-    } catch (error) {
-      console.error('Error searching patient:', error);
-    }
-  } else {
-    patientSearchResult.value = [];
-    patientFound.value = false;
-  }
-};
-
-const addNewPatient = () => {
-  window.location.href = '/add-patient';
-};
-
-const scheduleAppointment = async () => {
-  if (selectedPatient.value && selectedDoctor.value && appointmentDate.value) {
-    await apiClient.post('/appointments', {
-      patientId: selectedPatient.value,
-      doctorId: selectedDoctor.value,
-      appointmentDate: appointmentDate.value
-    });
-  } else {
-    console.error('Please fill in all required fields.');
-  }
-};
-
-onMounted(async () => {
+const fetchDoctors = async () => {
   try {
-    const patientsResponse = await apiClient.get<Patient[]>('/patients');
-    patients.value = patientsResponse;
-    
-    const doctorsResponse = await apiClient.get<Doctor[]>('/doctors');
-    doctors.value = doctorsResponse;
+    const response = await apiClient.get<Doctor[]>('/users/doctors');
+    doctors.value = response;
   } catch (error) {
-    console.error('Error fetching initial data:', error);
+    console.error('Error fetching doctors:', error);
   }
+};
+
+const fetchAppointments = async () => {
+  try {
+    const response = await apiClient.get<Appointment[]>('/appointments', {
+      params: {
+        doctorId: selectedDoctor.value,
+        personalNumber: searchPersonalNumber.value,
+        date: selectedDate.value
+      },
+      headers: new AxiosHeaders()
+    });
+    appointments.value = response;
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+  }
+};
+
+const filterAppointments = () => {
+  fetchAppointments();
+};
+
+onMounted(() => {
+  fetchDoctors();
+  fetchAppointments();
 });
 </script>
